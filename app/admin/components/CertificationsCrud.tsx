@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { createClient } from '@/lib/supabase/client';
 
 type Certification = {
@@ -114,17 +114,12 @@ export default function CertificationsCrud({
   }
 
   useEffect(() => {
-    loadData();
+    const timer = window.setTimeout(() => {
+      void loadData();
+    }, 0);
+
+    return () => window.clearTimeout(timer);
   }, []);
-
-  useEffect(() => {
-    if (!externalEditId || items.length === 0) return;
-
-    const target = items.find((item) => item.id === externalEditId);
-    if (target) {
-      startEdit(target);
-    }
-  }, [externalEditId, items]);
 
   function resetForm() {
     setForm(initialForm);
@@ -132,7 +127,7 @@ export default function CertificationsCrud({
     setError(null);
   }
 
-  function startEdit(item: Certification) {
+  const startEdit = useCallback((item: Certification) => {
     setEditingId(item.id);
     setForm({
       slug: item.slug ?? '',
@@ -149,7 +144,20 @@ export default function CertificationsCrud({
       sort_order: item.sort_order ?? 0,
     });
     setError(null);
-  }
+  }, []);
+
+  useEffect(() => {
+    if (!externalEditId || items.length === 0) return;
+
+    const target = items.find((item) => item.id === externalEditId);
+    if (target) {
+      const timer = window.setTimeout(() => {
+        startEdit(target);
+      }, 0);
+
+      return () => window.clearTimeout(timer);
+    }
+  }, [externalEditId, items, startEdit]);
 
   async function uploadFile(
     file: File | null,

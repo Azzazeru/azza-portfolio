@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import CertificationsCrud from './CertificationsCrud';
 import ProjectsCrud from './ProjectsCrud';
 
@@ -41,7 +41,7 @@ export default function AdminPanelTabs() {
     [certifications.length, projects.length]
   );
 
-  async function loadListData() {
+  const loadListData = useCallback(async () => {
     setLoadingList(true);
     setListError(null);
 
@@ -68,13 +68,17 @@ export default function AdminPanelTabs() {
     setCertifications(certJson.data ?? []);
     setProjects(projectJson.data ?? []);
     setLoadingList(false);
-  }
+  }, []);
 
   useEffect(() => {
-    if (activeTab === 'listado') {
-      loadListData();
-    }
-  }, [activeTab]);
+    if (activeTab !== 'listado') return;
+
+    const timer = window.setTimeout(() => {
+      void loadListData();
+    }, 0);
+
+    return () => window.clearTimeout(timer);
+  }, [activeTab, loadListData]);
 
   async function deleteCertification(id: string) {
     const confirmed = window.confirm('Seguro que quieres eliminar esta certificacion?');

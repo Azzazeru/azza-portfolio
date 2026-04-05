@@ -57,17 +57,7 @@ export default function Projects() {
 	}, []);
 
 	const totalPages = Math.ceil(projects.length / projectsPerSlide);
-
-	useEffect(() => {
-		if (totalPages === 0) {
-			setActivePage(0);
-			return;
-		}
-
-		if (activePage > totalPages - 1) {
-			setActivePage(totalPages - 1);
-		}
-	}, [activePage, totalPages]);
+	const safeActivePage = totalPages > 0 ? Math.min(activePage, totalPages - 1) : 0;
 
 	useEffect(() => {
 		if (totalPages <= 1) return;
@@ -80,7 +70,7 @@ export default function Projects() {
 		return () => clearInterval(timer);
 	}, [totalPages, shouldReduceMotion]);
 
-	const pageStart = activePage * projectsPerSlide;
+	const pageStart = safeActivePage * projectsPerSlide;
 	const visibleProjects = projects.slice(pageStart, pageStart + projectsPerSlide);
 
 	function goPrev() {
@@ -137,7 +127,7 @@ export default function Projects() {
 					{visibleProjects.length > 0 ? (
 						<AnimatePresence mode="wait">
 							<motion.div
-								key={`page-${activePage}-${projectsPerSlide}`}
+								key={`page-${safeActivePage}-${projectsPerSlide}`}
 								initial={shouldReduceMotion ? false : { opacity: 0, y: 8 }}
 								animate={{ opacity: 1, y: 0 }}
 								exit={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, y: -8 }}
@@ -222,7 +212,7 @@ export default function Projects() {
 									type="button"
 									onClick={() => setActivePage(idx)}
 									aria-label={`Ir al slide ${idx + 1}`}
-									className={`h-2.5 w-2.5 rounded-full transition ${idx === activePage ? 'bg-green-400' : 'bg-white/30 hover:bg-white/60'
+									className={`h-2.5 w-2.5 rounded-full transition ${idx === safeActivePage ? 'bg-green-400' : 'bg-white/30 hover:bg-white/60'
 										}`}
 								/>
 							))}

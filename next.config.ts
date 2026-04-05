@@ -3,7 +3,12 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   images: {
     unoptimized: true,
-    domains: ['images.credly.com', 'www.svgrepo.com', 'www.freecodecamp.org', 'qodjeibshsyaaadbptbu.supabase.co'],
+    remotePatterns: [
+      { protocol: 'https', hostname: 'images.credly.com' },
+      { protocol: 'https', hostname: 'www.svgrepo.com' },
+      { protocol: 'https', hostname: 'www.freecodecamp.org' },
+      { protocol: 'https', hostname: 'qodjeibshsyaaadbptbu.supabase.co' },
+    ],
   },
 };
 

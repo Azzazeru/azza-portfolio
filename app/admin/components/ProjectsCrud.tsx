@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
 type Project = {
   id: string;
@@ -113,17 +113,12 @@ export default function ProjectsCrud({ externalEditId }: ProjectsCrudProps) {
   }
 
   useEffect(() => {
-    loadData();
+    const timer = window.setTimeout(() => {
+      void loadData();
+    }, 0);
+
+    return () => window.clearTimeout(timer);
   }, []);
-
-  useEffect(() => {
-    if (!externalEditId || items.length === 0) return;
-
-    const target = items.find((item) => item.id === externalEditId);
-    if (target) {
-      startEdit(target);
-    }
-  }, [externalEditId, items]);
 
   function resetForm() {
     setForm(initialForm);
@@ -131,7 +126,7 @@ export default function ProjectsCrud({ externalEditId }: ProjectsCrudProps) {
     setError(null);
   }
 
-  function startEdit(item: Project) {
+  const startEdit = useCallback((item: Project) => {
     setEditingId(item.id);
     setForm({
       name: item.name ?? '',
@@ -150,7 +145,20 @@ export default function ProjectsCrud({ externalEditId }: ProjectsCrudProps) {
       project_type_ids: (item.project_type_ids ?? []).map((id) => String(id)),
     });
     setError(null);
-  }
+  }, []);
+
+  useEffect(() => {
+    if (!externalEditId || items.length === 0) return;
+
+    const target = items.find((item) => item.id === externalEditId);
+    if (target) {
+      const timer = window.setTimeout(() => {
+        startEdit(target);
+      }, 0);
+
+      return () => window.clearTimeout(timer);
+    }
+  }, [externalEditId, items, startEdit]);
 
   function toggleProjectType(projectTypeId: string) {
     setForm((prev) => {
