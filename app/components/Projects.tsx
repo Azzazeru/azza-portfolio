@@ -1,164 +1,250 @@
 'use client';
 
-import { motion } from 'framer-motion';
+import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
+import Link from 'next/link';
+import { useEffect, useState } from 'react';
 
-const projects = [
-	{
-		title: 'SAGE',
-		description: 'Sistema de Administracion y Gestion Escolar, desarrollado como proyecto final de carrera.',
-		details: [
-			'Desarrollo de una plataforma web para la gestión escolar utilizando NestJS y NextJS.',
-			'Implementación de funcionalidades para la administración de estudiantes, profesores y cursos.',
-			'Creación de un sistema de autenticación y autorización para diferentes roles de usuario.',
-			'Microservicios para manejar distintas partes del sistema de forma independiente.',
-			'Doble base de datos con Postgresql y MongoDB para optimizar el rendimiento y la escalabilidad.',
-		],
-		tech: ['NodeJS', 'NestJS', 'NextJS', 'Postgresql', 'MongoDB']
-	},
-	{
-		title: 'Stack MERN - TODO List',
-		description: 'Pequeño proyecto de un TODO list con un stack MERN, como proyecto personal para aprender y practicar.',
-		details: [
-			'Desarrollo de un sistema de gestión de tareas utilizando el stack MERN.',
-			'Implementación de una API RESTful con Node.js y Express para gestionar las tareas.',
-			'Integración de MongoDB para el almacenamiento de datos y uso de Mongoose para la manipulación de datos.',
-			'Implementación de autenticación y autorización de usuarios utilizando JWT.',
-		],
-		tech: ['NodeJS', 'Express', 'MongoDB', 'React'],
-		repo: 'https://github.com/Azzazeru/Stack-MERN-Project',
-	},
-];
+type Project = {
+	id: string;
+	slug: string;
+	name: string;
+	description: string;
+	key_points: string[];
+	repo_url: string | null;
+	live_url: string | null;
+	status: string;
+	sort_order: number;
+	tags?: Array<{ key: string; value: string }>;
+};
 
 export default function Projects() {
-	const containerVariants = {
-		hidden: { opacity: 0 },
-		visible: {
-			opacity: 1,
-			transition: {
-				staggerChildren: 0.2,
-				delayChildren: 0.1,
-			},
-		},
-	};
+	const [projects, setProjects] = useState<Project[]>([]);
+	const [loading, setLoading] = useState(true);
+	const [activePage, setActivePage] = useState(0);
+	const [projectsPerSlide, setProjectsPerSlide] = useState(1);
+	const shouldReduceMotion = useReducedMotion();
 
-	const itemVariants = {
-		hidden: { opacity: 0, y: 30 },
-		visible: {
-			opacity: 1,
-			y: 0,
-			transition: { duration: 0.6, ease: 'easeOut' as const },
-		},
-	};
+	useEffect(() => {
+		async function loadProjects() {
+			const res = await fetch('/api/public/projects', { cache: 'no-store' });
+			const json = await res.json();
+
+			if (!res.ok) {
+				setLoading(false);
+				return;
+			}
+
+			setProjects(json.data ?? []);
+			setLoading(false);
+		}
+
+		loadProjects();
+	}, []);
+
+	useEffect(() => {
+		function syncViewportMode() {
+			if (window.innerWidth >= 768) {
+				setProjectsPerSlide(2);
+			} else {
+				setProjectsPerSlide(1);
+			}
+		}
+
+		syncViewportMode();
+		window.addEventListener('resize', syncViewportMode);
+
+		return () => window.removeEventListener('resize', syncViewportMode);
+	}, []);
+
+	const totalPages = Math.ceil(projects.length / projectsPerSlide);
+
+	useEffect(() => {
+		if (totalPages === 0) {
+			setActivePage(0);
+			return;
+		}
+
+		if (activePage > totalPages - 1) {
+			setActivePage(totalPages - 1);
+		}
+	}, [activePage, totalPages]);
+
+	useEffect(() => {
+		if (totalPages <= 1) return;
+		if (shouldReduceMotion) return;
+
+		const timer = setInterval(() => {
+			setActivePage((prev) => (prev + 1) % totalPages);
+		}, 6500);
+
+		return () => clearInterval(timer);
+	}, [totalPages, shouldReduceMotion]);
+
+	const pageStart = activePage * projectsPerSlide;
+	const visibleProjects = projects.slice(pageStart, pageStart + projectsPerSlide);
+
+	function goPrev() {
+		if (totalPages <= 1) return;
+		setActivePage((prev) => (prev - 1 + totalPages) % totalPages);
+	}
+
+	function goNext() {
+		if (totalPages <= 1) return;
+		setActivePage((prev) => (prev + 1) % totalPages);
+	}
 
 	return (
 		<section className="py-20 px-4 relative overflow-hidden">
 			{/* Background decorations */}
-			<motion.div
-				className="absolute top-0 right-0 w-96 h-96 bg-blue-500/5 rounded-full blur-3xl"
-				animate={{
-					opacity: [0.3, 0.6, 0.3],
-				}}
-				transition={{
-					duration: 6,
-					repeat: Infinity,
-					ease: 'easeInOut',
-				}}
-			/>
+			{shouldReduceMotion ? (
+				<div className="absolute top-0 right-0 w-96 h-96 bg-blue-500/5 rounded-full blur-3xl" />
+			) : (
+				<motion.div
+					className="absolute top-0 right-0 w-96 h-96 bg-blue-500/5 rounded-full blur-3xl"
+					animate={{
+						opacity: [0.3, 0.5, 0.3],
+					}}
+					transition={{
+						duration: 8,
+						repeat: Infinity,
+						ease: 'easeInOut',
+					}}
+				/>
+			)}
 
 			<div className="max-w-6xl mx-auto relative z-10">
-				<motion.div
-					initial={{ opacity: 0, y: -20 }}
-					whileInView={{ opacity: 1, y: 0 }}
-					viewport={{ once: true }}
-					transition={{ duration: 0.6 }}
-					className="mb-12"
-				>
-					<motion.p className="text-green-500 mb-2 font-mono text-sm text-center">
+				<div className="mb-12">
+					<p className="text-green-500 mb-2 font-mono text-sm text-center">
 						$ cd projects
-					</motion.p>
-					<motion.p className="text-gray-400 mb-3 font-mono text-xs text-center">
+					</p>
+					<p className="text-gray-400 mb-3 font-mono text-xs text-center">
 						$ ls -la
-					</motion.p>
+					</p>
 					<h2 className="text-3xl font-bold text-center bg-gradient-to-r from-green-400 to-blue-400 bg-clip-text text-transparent">
 						Proyectos
 					</h2>
-				</motion.div>
+				</div>
 
-				<motion.div
-					className={`grid gap-8 ${projects.length > 1 ? 'md:grid-cols-2' : 'grid-cols-1'}`}
-					variants={containerVariants}
-					initial="hidden"
-					whileInView="visible"
-					viewport={{ once: true }}
-				>
-					{projects.map((project, index) => (
-						<motion.div
-							key={index}
-							variants={itemVariants}
-							whileHover={{ y: -8, transition: { duration: 0.2 } }}
-							className="group bg-gradient-to-br from-gray-900/60 to-gray-800/60 rounded-2xl p-6 border border-gray-800 shadow-md hover:shadow-lg hover:shadow-green-500/20 hover:border-green-500/50 transition-all duration-300 cursor-pointer"
-						>
-							<p className="text-green-500/90 font-mono text-xs mb-3">$ cat ./projects/{project.title}.md</p>
-							<h3 className="text-2xl font-bold mb-4 text-gray-100 group-hover:text-green-400 transition-colors">
-								{project.title}
-							</h3>
-							<p className="text-gray-400 mb-6 group-hover:text-gray-300 transition-colors">{project.description}</p>
+				<div className="mx-auto w-full max-w-5xl">
+					{loading ? (
+						<p className="text-center text-white/60">Cargando proyectos...</p>
+					) : null}
 
-							<div className="mb-6">
-								<h4 className="text-lg font-semibold mb-2 text-green-400">Puntos Clave:</h4>
-								<motion.ul 
-									className="list-disc list-inside space-y-2 text-gray-300 text-sm"
-									initial="hidden"
-									whileInView="visible"
-									viewport={{ once: true }}
-									variants={{
-										visible: {
-											transition: {
-												staggerChildren: 0.1,
-											},
-										},
-									}}
-								>
-									{project.details.map((detail, i) => (
-										<motion.li 
-											key={i}
-											variants={{
-												hidden: { opacity: 0, x: -10 },
-												visible: { opacity: 1, x: 0 },
-											}}
-										>
-											{detail}
-										</motion.li>
-									))}
-								</motion.ul>
-							</div>
+					{!loading && projects.length === 0 ? (
+						<p className="text-center text-white/60">Sin proyectos publicados.</p>
+					) : null}
 
-							<div className="flex flex-wrap gap-2 mb-4">
-								{project.tech.map((tech, i) => (
-									<motion.span
-										key={i}
-										whileHover={{ scale: 1.05 }}
-										className="text-xs px-2 py-1 bg-gray-700/40 text-gray-200 rounded-md border border-gray-600 hover:bg-green-500/20 hover:border-green-500/50 transition-all"
+					{visibleProjects.length > 0 ? (
+						<AnimatePresence mode="wait">
+							<motion.div
+								key={`page-${activePage}-${projectsPerSlide}`}
+								initial={shouldReduceMotion ? false : { opacity: 0, y: 8 }}
+								animate={{ opacity: 1, y: 0 }}
+								exit={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, y: -8 }}
+								transition={{ duration: shouldReduceMotion ? 0.15 : 0.28, ease: 'easeInOut' }}
+								className={`grid gap-5 ${projectsPerSlide === 2 ? 'md:grid-cols-2' : 'grid-cols-1'}`}
+							>
+								{visibleProjects.map((project) => (
+									<div
+										key={project.id}
+										className="group min-h-[28rem] bg-gradient-to-br from-gray-900/60 to-gray-800/60 rounded-2xl p-6 border border-gray-800 shadow-md hover:shadow-lg hover:shadow-green-500/20 hover:border-green-500/50 transition-colors duration-300"
 									>
-										{tech}
-									</motion.span>
-								))}
-							</div>
+										<p className="text-green-500/90 font-mono text-xs mb-3">$ cat ./projects/{project.slug}.md</p>
+										<h3 className="text-2xl font-bold mb-4 text-gray-100 group-hover:text-green-400 transition-colors">
+											{project.name}
+										</h3>
+										<p className="text-gray-400 mb-6 group-hover:text-gray-300 transition-colors">{project.description}</p>
 
-							{project.repo && (
-								<motion.a
-									href={project.repo}
-									target="_blank"
-									rel="noopener noreferrer"
-									whileHover={{ x: 5 }}
-									className="inline-block mt-2 text-sm text-blue-400 hover:text-blue-300 transition-colors group-hover:underline"
-								>
-									Ver repositorio →
-								</motion.a>
-							)}
-						</motion.div>
-					))}
-				</motion.div>
+										<div className="mb-6">
+											<h4 className="text-lg font-semibold mb-2 text-green-400">Puntos Clave:</h4>
+											<ul className="list-disc list-inside space-y-2 text-gray-300 text-sm">
+												{(project.key_points ?? []).map((detail, i) => (
+													<li key={i}>{detail}</li>
+												))}
+											</ul>
+										</div>
+
+										<div className="flex flex-wrap gap-2 mb-4">
+											{(project.tags ?? []).map((tag, i) => (
+												<span
+													key={i}
+													title={`${tag.key}: ${tag.value}`}
+													className="text-xs px-2 py-1 bg-gray-700/40 text-gray-200 rounded-md border border-gray-600 hover:bg-green-500/20 hover:border-green-500/50 transition-all"
+												>
+													{tag.value}
+												</span>
+											))}
+										</div>
+
+										<div className="mt-2 flex flex-wrap gap-4">
+											{project.repo_url && (
+												<a
+													href={project.repo_url}
+													target="_blank"
+													rel="noopener noreferrer"
+													className="inline-block text-sm text-blue-400 hover:text-blue-300 transition-colors group-hover:underline"
+												>
+													Ver repositorio →
+												</a>
+											)}
+
+											{project.live_url && (
+												<a
+													href={project.live_url}
+													target="_blank"
+													rel="noopener noreferrer"
+													className="inline-block text-sm text-emerald-400 hover:text-emerald-300 transition-colors group-hover:underline"
+												>
+													Ver demo →
+												</a>
+											)}
+										</div>
+									</div>
+								))}
+							</motion.div>
+						</AnimatePresence>
+					) : null}
+				</div>
+
+				{!loading && totalPages > 1 ? (
+					<div className="mt-6 flex items-center justify-center gap-3">
+						<button
+							type="button"
+							onClick={goPrev}
+							className="rounded-md border border-white/20 px-3 py-1.5 text-xs text-white/70 transition hover:border-green-400 hover:text-green-300"
+						>
+							Anterior
+						</button>
+						<div className="flex items-center gap-2">
+							{Array.from({ length: totalPages }).map((_, idx) => (
+								<button
+									key={`page-dot-${idx}`}
+									type="button"
+									onClick={() => setActivePage(idx)}
+									aria-label={`Ir al slide ${idx + 1}`}
+									className={`h-2.5 w-2.5 rounded-full transition ${idx === activePage ? 'bg-green-400' : 'bg-white/30 hover:bg-white/60'
+										}`}
+								/>
+							))}
+						</div>
+						<button
+							type="button"
+							onClick={goNext}
+							className="rounded-md border border-white/20 px-3 py-1.5 text-xs text-white/70 transition hover:border-green-400 hover:text-green-300"
+						>
+							Siguiente
+						</button>
+					</div>
+				) : null}
+
+				<div className="mt-8 flex justify-center">
+					<Link
+						href="/proyectos"
+						className="rounded-lg border border-green-400/40 bg-green-500/10 px-4 py-2 text-sm text-green-300 transition hover:border-green-300 hover:bg-green-500/20 hover:text-green-200"
+					>
+						Ver todos los proyectos
+					</Link>
+				</div>
 			</div>
 		</section>
 	);

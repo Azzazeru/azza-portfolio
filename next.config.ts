@@ -1,11 +1,9 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  output: 'export',
-  trailingSlash: true,
   images: {
     unoptimized: true,
-    domains: ['images.credly.com', 'www.svgrepo.com', 'www.freecodecamp.org'],
+    domains: ['images.credly.com', 'www.svgrepo.com', 'www.freecodecamp.org', 'qodjeibshsyaaadbptbu.supabase.co'],
   },
 };
 
