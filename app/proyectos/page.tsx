@@ -99,7 +99,7 @@ export default async function ProjectsPage() {
   const { items, error } = await getProjects();
 
   return (
-    <main className="relative min-h-screen overflow-hidden bg-[#1A1A1A] px-4 py-16 text-white">
+    <main className="relative min-h-screen overflow-hidden px-4 py-16 text-white">
       <div className="pointer-events-none absolute -top-24 right-0 h-80 w-80 animate-pulse rounded-full bg-blue-400/10 blur-3xl" />
       <div className="pointer-events-none absolute bottom-0 left-0 h-96 w-96 animate-pulse rounded-full bg-green-400/10 blur-3xl" />
 
@@ -124,80 +124,82 @@ export default async function ProjectsPage() {
           </Link>
         </div>
 
-        {error ? (
-          <div className="rounded-xl border border-red-500/40 bg-red-500/10 p-4 text-sm text-red-200">
-            Error cargando proyectos: {error}
-          </div>
-        ) : null}
+        <div className="lg:px-4">
+          {error ? (
+            <div className="rounded-xl border border-red-500/40 bg-red-500/10 p-4 text-sm text-red-200">
+              Error cargando proyectos: {error}
+            </div>
+          ) : null}
 
-        {!error && items.length === 0 ? (
-          <div className="rounded-xl border border-white/10 bg-white/5 p-6 text-sm text-white/70">
-            No hay proyectos publicados para mostrar.
-          </div>
-        ) : null}
+          {!error && items.length === 0 ? (
+            <div className="rounded-xl border border-white/10 bg-white/5 p-6 text-sm text-white/70">
+              No hay proyectos publicados para mostrar.
+            </div>
+          ) : null}
 
-        <section className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-2">
-          {items.map((project) => (
-            <article
-              key={project.id}
-              className="group flex h-full flex-col rounded-2xl border border-white/10 bg-gradient-to-b from-slate-700/25 via-slate-800/20 to-black/35 p-5 shadow-lg shadow-black/20 transition duration-300 hover:-translate-y-1 hover:border-green-300/50 hover:shadow-[0_16px_40px_rgba(34,197,94,0.18)]"
-            >
-              <p className="font-mono text-xs text-green-500/90">$ cat ./projects/{project.slug}.md</p>
-              <h2 className="mt-2 text-2xl font-bold text-gray-100 transition group-hover:text-green-300">
-                {project.name}
-              </h2>
-              <p className="mt-3 text-sm leading-6 text-white/70">{project.description}</p>
+          <section className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-2">
+            {items.map((project) => (
+              <article
+                key={project.id}
+                className="group flex h-full flex-col rounded-2xl border border-white/10 bg-gradient-to-b from-slate-900/90 via-slate-900/90 to-black/90 p-5 shadow-lg shadow-black/20 transition duration-300 hover:-translate-y-1 hover:border-green-300/50 hover:shadow-[0_16px_40px_rgba(34,197,94,0.18)]"
+              >
+                <p className="font-mono text-xs text-green-500/90">$ cat ./projects/{project.slug}.md</p>
+                <h2 className="mt-2 text-2xl font-bold text-gray-100 transition group-hover:text-green-300">
+                  {project.name}
+                </h2>
+                <p className="mt-3 text-sm leading-6 text-white/70">{project.description}</p>
 
-              <div className="mt-5">
-                <h3 className="text-sm font-semibold text-green-300">Puntos clave</h3>
-                <ul className="mt-2 space-y-2 text-sm text-gray-300">
-                  {(project.key_points ?? []).map((point, index) => (
-                    <li key={`${project.id}-point-${index}`} className="flex gap-2">
-                      <span className="mt-1 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-green-400" />
-                      <span>{point}</span>
-                    </li>
+                <div className="mt-5">
+                  <h3 className="text-sm font-semibold text-green-300">Puntos clave</h3>
+                  <ul className="mt-2 space-y-2 text-sm text-gray-300">
+                    {(project.key_points ?? []).map((point, index) => (
+                      <li key={`${project.id}-point-${index}`} className="flex gap-2">
+                        <span className="mt-1 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-green-400" />
+                        <span>{point}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                <div className="mt-5 flex flex-wrap gap-2">
+                  {(project.tags ?? []).map((tag, index) => (
+                    <span
+                      key={`${project.id}-tag-${index}`}
+                      title={`${tag.key}: ${tag.value}`}
+                      className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-white/75"
+                    >
+                      {tag.value}
+                    </span>
                   ))}
-                </ul>
-              </div>
+                </div>
 
-              <div className="mt-5 flex flex-wrap gap-2">
-                {(project.tags ?? []).map((tag, index) => (
-                  <span
-                    key={`${project.id}-tag-${index}`}
-                    title={`${tag.key}: ${tag.value}`}
-                    className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-white/75"
-                  >
-                    {tag.value}
-                  </span>
-                ))}
-              </div>
+                <div className="mt-auto pt-6 flex flex-wrap gap-4">
+                  {project.repo_url ? (
+                    <a
+                      href={project.repo_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-sm text-blue-300 transition hover:text-blue-200"
+                    >
+                      Ver repositorio →
+                    </a>
+                  ) : null}
 
-              <div className="mt-auto pt-6 flex flex-wrap gap-4">
-                {project.repo_url ? (
-                  <a
-                    href={project.repo_url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-sm text-blue-300 transition hover:text-blue-200"
-                  >
-                    Ver repositorio →
-                  </a>
-                ) : null}
-
-                {project.live_url ? (
-                  <a
-                    href={project.live_url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-sm text-emerald-300 transition hover:text-emerald-200"
-                  >
-                    Ver demo →
-                  </a>
-                ) : null}
-              </div>
-            </article>
-          ))}
-        </section>
+                  {project.live_url ? (
+                    <a
+                      href={project.live_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-sm text-emerald-300 transition hover:text-emerald-200"
+                    >
+                      Ver demo →
+                    </a>
+                  ) : null}
+                </div>
+              </article>
+            ))}
+          </section>
+        </div>
       </div>
     </main>
   );

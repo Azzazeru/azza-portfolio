@@ -36,7 +36,7 @@ export default function BackendPortfolio() {
 	};
 
 	return (
-		<main className="min-h-screen bg-[#1A1A1A] text-white overflow-x-hidden">
+		<main className="min-h-screen text-white overflow-x-hidden">
 			<script
 				type="application/ld+json"
 				dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}

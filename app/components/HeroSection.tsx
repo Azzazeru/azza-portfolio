@@ -26,23 +26,7 @@ export default function HeroSection() {
 	const skills = ['Node.js', 'Java', 'Python', 'Linux', 'Git', 'Docker', 'Azure'];
 
 	return (
-		<section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-			{/* Animated gradient background */}
-			<div className="absolute inset-0 bg-gradient-to-r from-green-600/20 to-blue-600/20 opacity-10" />
-			<motion.div 
-				className="absolute inset-0"
-				animate={{ 
-					background: [
-						'rgba(34,197,94,0.08)',
-						'rgba(59,130,246,0.08)',
-						'rgba(34,197,94,0.08)',
-					]
-				}}
-				transition={{ duration: 8, repeat: Infinity }}
-			>
-				<div className="absolute inset-0 bg-[url('/grid.svg')] bg-center [mask-image:linear-gradient(180deg,white,rgba(255,255,255,0))]" />
-			</motion.div>
-
+		<section id="hero-section" className="relative min-h-screen flex items-center justify-center overflow-hidden">
 			{/* Floating orbs effect */}
 			<motion.div
 				className="absolute top-1/4 left-1/4 w-72 h-72 bg-green-500/10 rounded-full blur-3xl"
@@ -75,20 +59,20 @@ export default function HeroSection() {
 					animate={{ opacity: 1, y: 0, scale: 1 }}
 					transition={{ duration: 0.8, ease: 'easeOut' }}
 					whileHover={{ boxShadow: '0 25px 50px rgba(34, 197, 94, 0.2)' }}
-					className="bg-black/50 backdrop-blur-lg rounded-lg border border-gray-800 p-6 hover:border-green-500/50 transition-all duration-300 shadow-2xl"
+					className="bg-black/90 backdrop-blur-lg rounded-lg border border-gray-700/80 p-6 hover:border-green-500/50 transition-all duration-300 shadow-2xl"
 				>
 					<div className="flex items-center gap-2 mb-4">
-						<motion.div 
+						<motion.div
 							className="w-3 h-3 rounded-full bg-red-500"
 							animate={{ scale: [1, 1.2, 1] }}
 							transition={{ duration: 2, repeat: Infinity, delay: 0 }}
 						/>
-						<motion.div 
+						<motion.div
 							className="w-3 h-3 rounded-full bg-yellow-500"
 							animate={{ scale: [1, 1.2, 1] }}
 							transition={{ duration: 2, repeat: Infinity, delay: 0.2 }}
 						/>
-						<motion.div 
+						<motion.div
 							className="w-3 h-3 rounded-full bg-green-500"
 							animate={{ scale: [1, 1.2, 1] }}
 							transition={{ duration: 2, repeat: Infinity, delay: 0.4 }}
@@ -103,7 +87,7 @@ export default function HeroSection() {
 						>
 							$ cd ~/about
 						</motion.p>
-						<motion.p 
+						<motion.p
 							className="text-green-500"
 							initial={{ opacity: 0, x: -10 }}
 							animate={{ opacity: 1, x: 0 }}
@@ -111,7 +95,7 @@ export default function HeroSection() {
 						>
 							$ whoami
 						</motion.p>
-						<motion.h1 
+						<motion.h1
 							className="text-3xl sm:text-4xl md:text-5xl leading-tight font-bold mt-2 mb-4 bg-gradient-to-r from-green-400 to-blue-400 bg-clip-text text-transparent break-words"
 							initial={{ opacity: 0, y: 10 }}
 							animate={{ opacity: 1, y: 0 }}
@@ -120,7 +104,7 @@ export default function HeroSection() {
 							Aaron Fuentes{' '}
 							<span className="block sm:inline">(Azzazeru)</span>
 						</motion.h1>
-						<motion.p 
+						<motion.p
 							className="text-green-500"
 							initial={{ opacity: 0, x: -10 }}
 							animate={{ opacity: 1, x: 0 }}
@@ -136,7 +120,7 @@ export default function HeroSection() {
 						>
 							Desarrollador Full Stack
 						</motion.p>
-						<motion.p 
+						<motion.p
 							className="text-green-500"
 							initial={{ opacity: 0, x: -10 }}
 							animate={{ opacity: 1, x: 0 }}
@@ -152,7 +136,7 @@ export default function HeroSection() {
 						>
 							Ingeniero Informatico
 						</motion.p>
-						<motion.p 
+						<motion.p
 							className="text-green-500"
 							initial={{ opacity: 0, x: -10 }}
 							animate={{ opacity: 1, x: 0 }}
@@ -170,8 +154,8 @@ export default function HeroSection() {
 								<motion.span
 									key={skill}
 									variants={itemVariants}
-									whileHover={{ 
-										scale: 1.1, 
+									whileHover={{
+										scale: 1.1,
 										backgroundColor: 'rgba(34,197,94,0.2)',
 										borderColor: 'rgba(34,197,94,1)',
 									}}

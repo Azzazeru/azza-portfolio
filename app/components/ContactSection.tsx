@@ -57,7 +57,7 @@ export default function ContactSection() {
 	};
 
 	return (
-		<section className="py-20 px-4 relative overflow-hidden">
+		<section className="py-14 md:py-16 px-4 relative overflow-hidden">
 			{/* Background glow */}
 			<motion.div
 				className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-green-500/5 rounded-full blur-3xl"
@@ -78,29 +78,29 @@ export default function ContactSection() {
 					whileInView={{ opacity: 1, y: 0 }}
 					viewport={{ once: true }}
 					transition={{ duration: 0.6 }}
-					className="relative p-8 rounded-2xl overflow-hidden backdrop-blur-lg border border-gray-800 bg-black/50 hover:border-green-500/50 transition-all duration-300 hover:shadow-2xl hover:shadow-green-500/10"
+					className="relative p-8 rounded-2xl overflow-hidden backdrop-blur-lg border border-gray-700/80 bg-black/90 hover:border-green-500/50 transition-all duration-300 hover:shadow-2xl hover:shadow-green-500/10"
 				>
 					<div className="absolute inset-0 bg-gradient-to-r from-green-500/5 to-blue-500/5" />
 					<div className="relative z-10">
 						{/* Terminal header */}
-						<motion.div 
+						<motion.div
 							className="flex items-center gap-2 mb-6"
 							initial={{ opacity: 0, scale: 0.8 }}
 							whileInView={{ opacity: 1, scale: 1 }}
 							viewport={{ once: true }}
 							transition={{ delay: 0.1 }}
 						>
-							<motion.div 
+							<motion.div
 								className="w-3 h-3 rounded-full bg-red-500"
 								animate={{ scale: [1, 1.2, 1] }}
 								transition={{ duration: 2, repeat: Infinity, delay: 0 }}
 							/>
-							<motion.div 
+							<motion.div
 								className="w-3 h-3 rounded-full bg-yellow-500"
 								animate={{ scale: [1, 1.2, 1] }}
 								transition={{ duration: 2, repeat: Infinity, delay: 0.2 }}
 							/>
-							<motion.div 
+							<motion.div
 								className="w-3 h-3 rounded-full bg-green-500"
 								animate={{ scale: [1, 1.2, 1] }}
 								transition={{ duration: 2, repeat: Infinity, delay: 0.4 }}
@@ -108,7 +108,7 @@ export default function ContactSection() {
 						</motion.div>
 
 						<div className="font-mono">
-							<motion.p 
+							<motion.p
 								className="text-green-500 mb-2"
 								initial={{ opacity: 0, x: -10 }}
 								whileInView={{ opacity: 1, x: 0 }}
@@ -117,7 +117,7 @@ export default function ContactSection() {
 							>
 								$ contact --info
 							</motion.p>
-							<motion.h2 
+							<motion.h2
 								className="text-3xl font-bold mb-8 bg-gradient-to-r from-green-400 to-blue-400 bg-clip-text text-transparent"
 								initial={{ opacity: 0, y: 10 }}
 								whileInView={{ opacity: 1, y: 0 }}
@@ -127,7 +127,7 @@ export default function ContactSection() {
 								Let&apos;s Connect
 							</motion.h2>
 
-							<motion.p 
+							<motion.p
 								className="text-green-500 mb-2"
 								initial={{ opacity: 0, x: -10 }}
 								whileInView={{ opacity: 1, x: 0 }}
@@ -136,7 +136,7 @@ export default function ContactSection() {
 							>
 								$ location --current
 							</motion.p>
-							<motion.div 
+							<motion.div
 								className="flex items-center gap-2 text-gray-300 mb-8"
 								initial={{ opacity: 0, x: -10 }}
 								whileInView={{ opacity: 1, x: 0 }}
@@ -156,7 +156,7 @@ export default function ContactSection() {
 								<span>Santiago, CH</span>
 							</motion.div>
 
-							<motion.p 
+							<motion.p
 								className="text-green-500 mb-2"
 								initial={{ opacity: 0, x: -10 }}
 								whileInView={{ opacity: 1, x: 0 }}
@@ -178,7 +178,7 @@ export default function ContactSection() {
 								aaron.fuentesdioca@gmail.com
 							</motion.a>
 
-							<motion.p 
+							<motion.p
 								className="text-green-500 mb-4"
 								initial={{ opacity: 0, x: -10 }}
 								whileInView={{ opacity: 1, x: 0 }}
@@ -187,7 +187,7 @@ export default function ContactSection() {
 							>
 								$ ls ./social-links
 							</motion.p>
-							<motion.div 
+							<motion.div
 								className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"
 								variants={containerVariants}
 								initial="hidden"
@@ -206,7 +206,7 @@ export default function ContactSection() {
 										className="flex items-center gap-3 px-4 py-3 bg-gray-800/50 rounded-lg hover:bg-green-500/10 hover:border-green-500/50 border border-gray-700/50 group transition-all duration-300"
 									>
 										<div className="p-2 bg-gray-700/50 group-hover:bg-green-500/20 rounded-lg transition-all">
-											<motion.div 
+											<motion.div
 												className="text-green-400"
 												whileHover={{ rotate: 10 }}
 											>

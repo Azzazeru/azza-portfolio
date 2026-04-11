@@ -1,6 +1,8 @@
 import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
 import { Analytics } from '@vercel/analytics/next';
+import GlobalBackgroundFx from '@components/GlobalBackgroundFx';
+import AzzaFetchOverlay from '@components/AzzaFetchOverlay';
 import './globals.css';
 
 const geistSans = Geist({
@@ -104,7 +106,9 @@ export default function RootLayout({
 }>) {
 	return (
 		<html lang="es">
-			<body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+			<body className={`${geistSans.variable} ${geistMono.variable} antialiased site-base-bg relative`}>
+				<GlobalBackgroundFx />
+				<AzzaFetchOverlay />
 				{children}
 				<Analytics />
 			</body>
